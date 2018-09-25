@@ -148,6 +148,7 @@ namespace OverhaulMod
             {
                 pins[pin].transform.parent = minimapParent.transform;
             }
+            pins["Compass"].GetComponent<tk2dSpriteAnimator>().Play("IDLE");
 
             foreach (string mark in markers.Keys)
             {
@@ -482,14 +483,20 @@ namespace OverhaulMod
             PositionCompass(false);
             UpdatePinsAndMarkers();
             pins["Compass"].transform.localPosition = map.compassIcon.transform.localPosition;
+            
             tk2dSpriteAnimator compassAnimator = pins["Compass"].GetComponent<tk2dSpriteAnimator>();
             tk2dSpriteAnimator orig_compassAnimator = map.compassIcon.GetComponent<tk2dSpriteAnimator>();
-            if (!compassAnimator.IsPlaying(orig_compassAnimator.CurrentClip))
+
+            string targetCompassAnim = "IDLE";//HeroController.instance.move_input == 0 ? "IDLE" : "WALK";
+            if (compassAnimator.CurrentClip == null)
             {
-                compassAnimator.Play(orig_compassAnimator.CurrentClip);
+                compassAnimator.Play("IDLE");
             }
-            OverhaulMod.instance.Log(orig_compassAnimator.CurrentClip.name);
-            pins["Compass"].GetComponent<tk2dSpriteAnimator>().Play(map.compassIcon.GetComponent<tk2dSpriteAnimator>().CurrentClip);
+            else if (compassAnimator.CurrentClip.name != targetCompassAnim)
+            {
+                compassAnimator.Play(targetCompassAnim);
+            }
+            
             if (minimapParent != null)
             {
                 minimapParent.transform.localPosition = new Vector3(-map.compassIcon.transform.localPosition.x, -map.compassIcon.transform.localPosition.y, minimapParent.transform.localPosition.z);
@@ -720,21 +727,7 @@ namespace OverhaulMod
                 if (pd.soulLimited)
                 {
                     pins["Shade"].SetActive(true);
-                    /*
-                    if (!map.inRoom)
-                    {
-                        pins["Shade"].transform.localPosition = new Vector3(map.currentScenePos.x, map.currentScenePos.y, 0f);
-                        //map.shadeMarker.transform.localPosition = new Vector3(map.currentScenePos.x, map.currentScenePos.y, 0f);
-                    }
-                    else
-                    {
-                        float x = map.currentScenePos.x - map.currentScene.GetComponent<SpriteRenderer>().sprite.rect.size.x / 100f / 2f + (map.doorX + map.doorOriginOffsetX) / map.doorSceneWidth * (map.currentScene.GetComponent<SpriteRenderer>().sprite.rect.size.x / 100f * map.transform.localScale.x) / map.transform.localScale.x;
-                        float y = map.currentScenePos.y - map.currentScene.GetComponent<SpriteRenderer>().sprite.rect.size.y / 100f / 2f + (map.doorY + map.doorOriginOffsetY) / map.doorSceneHeight * (map.currentScene.GetComponent<SpriteRenderer>().sprite.rect.size.y / 100f * map.transform.localScale.y) / map.transform.localScale.y;
-                        pins["Shade"].transform.localPosition = new Vector3(x, y, 0f);
-                    }
-                    */
                     pins["Shade"].transform.localPosition = shadePos;
-                    //pd.shadeMapPos = new Vector3(map.currentScenePos.x, map.currentScenePos.y, 0f);
                 }
                 else
                 {
@@ -758,13 +751,23 @@ namespace OverhaulMod
             {
                 float x = map.currentScenePos.x - vector.x / 2f + (hero.transform.position.x) / sceneWidth * (vector.x * map.transform.localScale.x) / map.transform.localScale.x;
                 float y = map.currentScenePos.y - vector.y / 2f + (hero.transform.position.y ) / sceneHeight * (vector.y * map.transform.localScale.y) / map.transform.localScale.y;
-                map.compassIcon.transform.localPosition = new Vector3(x, y + 0.3f, -1f);
+                if (currentMapZone == "TOWN")
+                {
+                    map.compassIcon.transform.localPosition = new Vector3(x, y + 0.25f, -1f);
+                }
+                else
+                {
+                    map.compassIcon.transform.localPosition = new Vector3(x, y, -1f);
+                }
             }
             else
             {
+                
                 float x = map.currentScenePos.x - vector.x / 2f + (map.doorX + map.doorOriginOffsetX) / map.doorSceneWidth * (vector.x * map.transform.localScale.x) / map.transform.localScale.x;
                 float y = map.currentScenePos.y - vector.y / 2f + (map.doorY + map.doorOriginOffsetY) / map.doorSceneHeight * (vector.y * map.transform.localScale.y) / map.transform.localScale.y;
-                map.compassIcon.transform.localPosition = new Vector3(x, y + 0.3f, -1f);
+
+                map.compassIcon.transform.localPosition = new Vector3(x, y, -1f);
+
             }
 
             // DREAMER PINS

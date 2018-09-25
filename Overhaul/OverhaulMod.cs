@@ -30,7 +30,7 @@ namespace OverhaulMod
 
         private void SetupSettings()
         {
-            bool flag = base.GlobalSettings.SettingsVersion != "v1.0 BETA";
+            bool flag = base.GlobalSettings.SettingsVersion != "v1.0b BETA";
             if (flag || !File.Exists(SettingsFilename))
             {
                 if (flag)
@@ -67,9 +67,10 @@ namespace OverhaulMod
             {
                 if (pd.equippedCharm_2)
                 {
-                    minimap.Show();
                     GameMap map = GameManager.instance.gameMap.GetComponent<GameMap>();
                     map.SetupMap();
+                    minimap.Show();
+                    
                     minimap.UpdateAreas();
                 }
                 else
@@ -158,6 +159,7 @@ namespace OverhaulMod
                     if (minimap == null)
                     {
                         GameMap map = GameManager.instance.gameMap.GetComponent<GameMap>();
+                        map.SetupMap();
                         minimap = new Minimap(map);
                         minimap.UpdateMap();
                         minimap.UpdateAreas();
