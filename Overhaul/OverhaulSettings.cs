@@ -9,9 +9,9 @@ namespace OverhaulMod
     public class OverhaulSettingVars
     {
         //change when the global settings are updated to force a recreation of the global settings
-        public const string ModVersion = "0.0.1";
+        public const string ModVersion = "v1.0 BETA";
         //change when the global settings are updated to force a recreation of the global settings
-        public const string GlobalSettingsVersion = "0.0.1";
+        public const string GlobalSettingsVersion = "v1.0 BETA";
     }
 
     //Global (non-player specific) settings
@@ -24,7 +24,7 @@ namespace OverhaulMod
             IntValues.Clear();
             FloatValues.Clear();
             MinimapAutoUpdate = true;
-            SettingsVersion = "v0.0.1";
+            SettingsVersion = "v1.0 BETA";
         }
 
         public string SettingsVersion

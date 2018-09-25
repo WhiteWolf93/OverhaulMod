@@ -30,7 +30,7 @@ namespace OverhaulMod
 
         private void SetupSettings()
         {
-            bool flag = base.GlobalSettings.SettingsVersion != "v0.0.1";
+            bool flag = base.GlobalSettings.SettingsVersion != "v1.0 BETA";
             if (flag || !File.Exists(SettingsFilename))
             {
                 if (flag)
@@ -54,16 +54,38 @@ namespace OverhaulMod
             // AutoMinimap
             if (GlobalSettings.MinimapAutoUpdate)
             {
-                ModHooks.Instance.HeroUpdateHook += new HeroUpdateHandler(HeroUpdate);
-                UnityEngine.SceneManagement.SceneManager.sceneLoaded += this.UpdateMinimap;
+                ModHooks.Instance.CharmUpdateHook += CharmUpdate;
+                ModHooks.Instance.HeroUpdateHook += HeroUpdate;
+                UnityEngine.SceneManagement.SceneManager.sceneLoaded += UpdateMinimap;
                 UnityEngine.SceneManagement.SceneManager.activeSceneChanged += UpdateMinimap;
+            }
+        }
+
+        public void CharmUpdate(PlayerData pd, HeroController hc)
+        {
+            if (minimap != null)
+            {
+                if (pd.equippedCharm_2)
+                {
+                    minimap.Show();
+                    GameMap map = GameManager.instance.gameMap.GetComponent<GameMap>();
+                    map.SetupMap();
+                    minimap.UpdateAreas();
+                }
+                else
+                {
+                    minimap.Hide();
+                }
             }
         }
 
         private void UnregisterCallbacks()
         {
+            minimap.Unload();
+            minimap = null;
             ModHooks.Instance.HeroUpdateHook -= HeroUpdate;
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= this.UpdateMinimap;
+            ModHooks.Instance.CharmUpdateHook -= CharmUpdate;
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= UpdateMinimap;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= UpdateMinimap;
         }
 
@@ -74,6 +96,12 @@ namespace OverhaulMod
 
         private void UpdateMinimap(Scene from, Scene to)
         {
+            if (HeroController.instance == null)
+            {
+                minimap.Unload();
+                minimap = null;
+            }
+
             GameManager.instance.StartCoroutine(UpdateMap());
         }
 
@@ -85,13 +113,34 @@ namespace OverhaulMod
         private IEnumerator UpdateMap()
         {
             yield return new WaitForSeconds(0.2f);
-            UpdateMinimap();
+            if (minimap != null)
+            {
+                UpdateMinimap();
+            }
+            
         }
 
         private void UpdateMinimap()
         {
+            if (HeroController.instance == null)
+            {
+                if (minimap != null)
+                {
+                    minimap.Unload();
+                    minimap = null;
+                }
+            }
+
             if (minimap != null)
             {
+                if (HeroController.instance.playerData.equippedCharm_2)
+                {
+                    minimap.Show();
+                }
+                else
+                {
+                    minimap.Hide();
+                }
                 GameMap map = GameManager.instance.gameMap.GetComponent<GameMap>();
                 map.SetupMap();
                 minimap.UpdateAreas();

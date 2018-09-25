@@ -105,3 +105,4 @@ E:\Escritorio\HN\Mods\Overhaul\Overhaul\Overhaul\bin\Debug\UnityEngine.WindModul
 E:\Escritorio\HN\Mods\Overhaul\Overhaul\Overhaul\obj\Debug\Overhaul.csproj.CoreCompileInputs.cache
 E:\Escritorio\HN\Mods\Overhaul\Overhaul\Overhaul\obj\Debug\Overhaul.dll
 E:\Escritorio\HN\Mods\Overhaul\Overhaul\Overhaul\obj\Debug\Overhaul.pdb
+E:\Escritorio\HN\Mods\Overhaul\Overhaul\Overhaul\obj\Debug\Overhaul.csprojResolveAssemblyReference.cache
